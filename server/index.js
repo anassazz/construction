@@ -33,6 +33,4 @@ await mongoose.connect('mongodb://127.0.0.1:27017/construction').then(()=>{
 
 
 
-app.listen(PORT,()=>{
-    console.log(`🚀 Server is Runnin in http://localhost:${PORT}`)
-})
+
