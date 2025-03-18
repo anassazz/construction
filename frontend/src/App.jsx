@@ -12,7 +12,21 @@ import ResourceForm from "./components/Resources/ResourceForm";
 function App() {
   return (
     <>
-      
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 6000,
+          style: {
+            background: "white",
+            color: "black",
+            fontSize: "18px",
+            padding: "16px",
+            width: "400px",
+            borderRadius: "10px",
+            border: "2px solid #FFA500", // Orange
+          },
+        }}
+      />
 
       <Navbar></Navbar>
       <Routes>
