@@ -33,7 +33,7 @@ const Tasks = () => {
         <Link to="/taskform" className="mx-auto">
           <button className="bg-orange-600  text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-orange-700 transition-colors">
             <Plus size={20} />
-            <span>Task New </span>
+            <span>Task New  </span>
           </button>
         </Link>
       </div>
