@@ -40,12 +40,12 @@ const Projects = () => {
       </div>
 
       {/* Table to display the list of projects */}
-      <div className="max-w-7xl mx-auto mt-10 p-6 bg-gray-200   shadow-lg ">
-        <h2 className="text-2xl font-semibold mb-9 text-center text-orange-500  border-2  border-orange-400">
+      <div className="max-w-7xl mx-auto mt-10 p-6   shadow-lg ">
+        <h2 className="text-2xl font-semibold mb-9 text-center ">
           Project List
         </h2>
 
-        <table className="min-w-full table-auto border-x-8 border-b-8 border-orange-500">
+        <table className="min-w-full table-auto ">
           <thead>
             <tr >
               <th className="px-4 py-2 border-b text-left">Project Name</th>
