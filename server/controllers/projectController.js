@@ -19,4 +19,29 @@ const getProjects = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-export default {getProjects, createProject};
+
+
+// Mettre à jour  Project
+const updateProject = async (req, res) => {
+  try {
+    const Project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!Project) return res.status(404).json({ message: 'Project non trouvée' });
+    res.json(Project);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+// Supprimer  Project
+const deleteProject = async (req, res) => {
+  try {
+    const Project = await Project.findByIdAndDelete(req.params.id);
+    if (!Project) return res.status(404).json({ message: 'Project non trouvée' });
+    res.json({ message: 'Project supprimée avec succès' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export default {getProjects, createProject,updateProject,deleteProject};
