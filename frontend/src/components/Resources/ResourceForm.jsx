@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link ,useParams,useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const ResourceForm = () => {
+
+  const { id } = useParams(); // Récupérer l'ID depuis l'URL
+  const navigate = useNavigate(); // Permet de rediriger après soumission
       
   const [resource, setResource] = useState({
     resourceName: "",
@@ -12,6 +15,19 @@ const ResourceForm = () => {
     supplier: "",
   });
 
+
+  useEffect(() => {
+    if (id) {
+      axios.get(`http://127.0.0.1:3000/api/resources/${id}`)
+      
+        .then((response) => setResource(response.data))
+        .catch((error) => console.error("Error fetching resource:", error));
+        
+    }
+
+  }, [id]);
+
+
   const handleChange = (e) => {
     setResource({ ...resource, [e.target.name]: e.target.value });
   };
@@ -19,18 +35,22 @@ const ResourceForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:3000/api/resources", resource);
-      toast.success("Resource created successfully!");
-      setResource({ resourceName: "", type: "", quantity: "", supplier: "" });
+      if (id) {
+        await axios.put(`http://127.0.0.1:3000/api/resources/${id}`, resource);
+        toast.success("Resource updated successfully!");
+      } else {
+        await axios.post("http://127.0.0.1:3000/api/resources", resource);
+        toast.success("Resource created successfully!");
+      }
+      navigate("/resource"); // Redirection vers la liste
     } catch (error) {
-      console.error("Error creating resource:", error.response?.data || error.message);
-      toast.error(error.response?.data?.error || "Error creating resource");
+      toast.error(error.response?.data?.error || "Error processing request");
     }
   };
 
   return (
     <div className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-2xl shadow-md border-8 border-orange-500">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">New Resource</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">{id ? "Edit Resource" : "New Resource"}</h2>
       
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
@@ -109,7 +129,7 @@ const ResourceForm = () => {
             type="submit" 
             className="px-4 py-2 bg-orange-600 text-white rounded"
           >
-            Create Resource
+             {id ? "Update Resource" : "Create Resource"}
           </button>
         </div>
       </form>

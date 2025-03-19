@@ -34,6 +34,9 @@ function App() {
         <Route path="/tasks" element={<Tasks></Tasks>} />
         <Route path="/resource" element={<Resources></Resources>} />
 
+        <Route path="/resourceform/:id" element={<ResourceForm />} />
+
+
         <Route path="/projectform" element={<ProjectForm></ProjectForm>} />
         <Route path="/taskform" element={<TaskForm></TaskForm>} />
         <Route path="/resourceform" element={<ResourceForm></ResourceForm>} />
