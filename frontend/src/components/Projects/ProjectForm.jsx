@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const ProjectForm = () => {
@@ -93,9 +94,12 @@ const ProjectForm = () => {
         </div>
 
         <div className="flex justify-between">
-          <button type="button" className="px-4 py-2 bg-gray-500 text-white rounded-lg">
-            Cancel
-          </button>
+          <Link to ="/project">
+                  <button type="button" className="px-4 py-2 bg-gray-500 text-white rounded-lg">
+                     Cancel
+                  </button>
+          </Link>
+          
           <button type="submit" className="px-4 py-2 bg-orange-500 text-white rounded-lg">
             Create Project
           </button>

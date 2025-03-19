@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const TaskForm = () => {
@@ -109,12 +110,16 @@ const TaskForm = () => {
         </div>
 
         <div className="flex justify-between mt-4">
+
+          <Link to="/tasks">
           <button
             type="button"
             className="px-4 py-2 bg-gray-400 text-white rounded"
           >
             Cancel
           </button>
+          </Link>
+          
 
           <button
             type="submit"
