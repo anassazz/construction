@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+
+import React, { useState ,useEffect} from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link ,useParams,useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const ProjectForm = () => {
+
+  const { id } = useParams(); // Récupérer l'ID depuis l'URL
+  const navigate = useNavigate(); // Permet de rediriger après soumission
+
+
   const [project, setProject] = useState({
     projectName: "",
     description: "",
@@ -12,19 +18,43 @@ const ProjectForm = () => {
     budget: "",
   });
 
+  useEffect(() => {
+    if (id) {
+      axios.get(`http://127.0.0.1:3000/api/projects/${id}`)
+
+        .then((response) => {
+          setProject(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => console.error("Error fetching resource:", error));
+        
+    }
+
+  }, [id]);
+
+
+
+
+
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:3000/api/projects", project);
-      toast.success("Project created successfully!");
-      setProject({ projectName: "", description: "", startDate: "", endDate: "", budget: "" });
+      if (id) {
+        await axios.put(`http://127.0.0.1:3000/api/projects/${id}`, project);
+        toast.success("project updated successfully!");
+      } else {
+        await axios.post("http://127.0.0.1:3000/api/projects", project);
+        toast.success("project created successfully!");
+      }
+      navigate("/project"); // Redirection vers la liste
     } catch (error) {
-      console.error("Error creating project:", error.response?.data || error.message);
-      toast.error(error.response?.data?.error || "Error creating project");
+      toast.error(error.response?.data?.error || "Error processing request");
     }
   };
 
@@ -95,13 +125,16 @@ const ProjectForm = () => {
 
         <div className="flex justify-between">
           <Link to ="/project">
-                  <button type="button" className="px-4 py-2 bg-gray-500 text-white rounded-lg">
-                     Cancel
-                  </button>
-          </Link>
+                    <button 
+                      type="button" 
+                      className="px-4 py-2 bg-gray-400 text-white rounded"
+                      onClick={() => setProject({ projectName: "", description: "", startDate: "", endDate: "",budget:"" })} >
+                      Cancel
+                    </button>
+                    </Link>
           
           <button type="submit" className="px-4 py-2 bg-orange-500 text-white rounded-lg">
-            Create Project
+            {id ? "Update Project" : "Create Project"}
           </button>
         </div>
       </form>

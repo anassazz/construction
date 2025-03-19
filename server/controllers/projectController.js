@@ -20,6 +20,18 @@ const getProjects = async (req, res) => {
   }
 };
 
+// Récupérer un Project par ID
+const getProjectById = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    console.log(project);
+    if (!project) return res.status(404).json({ message: 'Project non trouvée' });
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 // Mettre à jour  Project
 const updateProject = async (req, res) => {
@@ -44,4 +56,6 @@ const deleteProject = async (req, res) => {
   }
 };
 
-export default {getProjects, createProject,updateProject,deleteProject};
+
+
+export default {getProjects, createProject,updateProject,deleteProject,getProjectById};
