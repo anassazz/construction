@@ -7,20 +7,31 @@ function Resources() {
   const [resources, setResources] = useState([]);
 
   useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:3000/api/resources");
-        setResources(response.data);
-      } catch (error) {
-        console.error(
-          "Error fetching projects:",
-          error.response?.data || error.message
-        );
-      }
-    };
-
     fetchResources();
   }, []);
+
+  const fetchResources = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:3000/api/resources");
+      setResources(response.data);
+    } catch (error) {
+      console.error(
+        "Error fetching resources:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this resource?")) {
+      try {
+        await axios.delete(`http://127.0.0.1:3000/api/resources/${id}`);
+        setResources(resources.filter((resource) => resource._id !== id));
+      } catch (error) {
+        console.error("Error deleting resource:", error.response?.data || error.message);
+      }
+    }
+  };
 
   return (
     <div>
@@ -72,7 +83,10 @@ function Resources() {
                     </button>
                     </Link>
                     
-                    <button className="text-red-500 hover:text-red-700">
+                    <button
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => handleDelete(resource._id)}
+                    >
                       <Trash2 size={23} />
                     </button>
                   </td>

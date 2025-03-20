@@ -7,20 +7,35 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:3000/api/projects");
+      setProjects(response.data);
+    } catch (error) {
+      console.error(
+        "Error fetching projects:", 
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this project?")) {
       try {
-        const response = await axios.get("http://127.0.0.1:3000/api/projects");
-        setProjects(response.data);
+        await axios.delete(`http://127.0.0.1:3000/api/projects/${id}`);
+        // Remove the deleted project from state
+        setProjects(projects.filter(project => project._id !== id));
       } catch (error) {
         console.error(
-          "Error fetching projects:",
+          "Error deleting project:", 
           error.response?.data || error.message
         );
       }
-    };
-
-    fetchProjects();
-  }, []);
+    }
+  };
 
   return (
     <div>
@@ -76,7 +91,10 @@ const Projects = () => {
 
 
 
-                    <button className="text-red-500 hover:text-red-700">
+                    <button 
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => handleDelete(project._id)}
+                    >
                       <Trash2 size={23} />
                     </button>
                   </td>
