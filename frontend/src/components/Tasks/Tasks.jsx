@@ -22,6 +22,20 @@ const Tasks = () => {
     fetchTasks();
   }, []);
 
+  const deleteTask = async (taskId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:3000/api/tasks/${taskId}`);
+      setTasks(tasks.filter((task) => task._id !== taskId)); // Update state to remove the deleted task
+      alert("Task deleted successfully!");
+    } catch (error) {
+      console.error(
+        "Error deleting task:",
+        error.response?.data || error.message
+      );
+      alert("Failed to delete task.");
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6  mt-10 ">
@@ -57,17 +71,16 @@ const Tasks = () => {
                   <td className="px-4 py-2 border-b">{task.startDate}</td>
                   <td className="px-4 py-2 border-b">{task.endDate}</td>
                   <td className="px-4 py-2 border-b flex space-x-2">
-
                     <Link to={`/taskform/${task._id}`}>
-                    <button className="text-orange-500 hover:text-orange-700 ">
-                      <Pencil size={23} />
-                    </button>
-                         
+                      <button className="text-orange-500 hover:text-orange-700 ">
+                        <Pencil size={23} />
+                      </button>
                     </Link>
-                    
 
-
-                    <button className="text-red-500 hover:text-red-700">
+                    <button
+                      onClick={() => deleteTask(task._id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
                       <Trash2 size={23} />
                     </button>
                   </td>
