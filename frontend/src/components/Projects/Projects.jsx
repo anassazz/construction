@@ -16,7 +16,7 @@ const Projects = () => {
       setProjects(response.data);
     } catch (error) {
       console.error(
-        "Error fetching projects:", 
+        "Error fetching projects:",
         error.response?.data || error.message
       );
     }
@@ -27,10 +27,10 @@ const Projects = () => {
       try {
         await axios.delete(`http://127.0.0.1:3000/api/projects/${id}`);
         // Remove the deleted project from state
-        setProjects(projects.filter(project => project._id !== id));
+        setProjects(projects.filter((project) => project._id !== id));
       } catch (error) {
         console.error(
-          "Error deleting project:", 
+          "Error deleting project:",
           error.response?.data || error.message
         );
       }
@@ -79,19 +79,14 @@ const Projects = () => {
                   <td className="px-4 py-2 border-b">{project.endDate}</td>
                   <td className="px-4 py-2 border-b">{project.budget}</td>
                   <td className="px-4 py-2 border-b flex space-x-2">
-
-
-                    <Link to = {`/projectform/${project._id}`}>
-                    <button className="text-orange-500 hover:text-orange-700 ">
-                      <Pencil size={23} />
-                    </button>
-                    </Link>
                     
+                    <Link to={`/projectform/${project._id}`}>
+                      <button className="text-orange-500 hover:text-orange-700 ">
+                        <Pencil size={23} />
+                      </button>
+                    </Link>
 
-
-
-
-                    <button 
+                    <button
                       className="text-red-500 hover:text-red-700"
                       onClick={() => handleDelete(project._id)}
                     >

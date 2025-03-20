@@ -1,14 +1,11 @@
-
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link ,useParams,useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const ProjectForm = () => {
-
   const { id } = useParams(); // Récupérer l'ID depuis l'URL
   const navigate = useNavigate(); // Permet de rediriger après soumission
-
 
   const [project, setProject] = useState({
     projectName: "",
@@ -20,27 +17,20 @@ const ProjectForm = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get(`http://127.0.0.1:3000/api/projects/${id}`)
+      axios
+        .get(`http://127.0.0.1:3000/api/projects/${id}`)
 
         .then((response) => {
           setProject(response.data);
           console.log(response.data);
         })
         .catch((error) => console.error("Error fetching resource:", error));
-        
     }
-
   }, [id]);
-
-
-
-
 
   const handleChange = (e) => {
     setProject({ ...project, [e.target.name]: e.target.value });
   };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,16 +114,28 @@ const ProjectForm = () => {
         </div>
 
         <div className="flex justify-between">
-          <Link to ="/project">
-                    <button 
-                      type="button" 
-                      className="px-4 py-2 bg-gray-400 text-white rounded"
-                      onClick={() => setProject({ projectName: "", description: "", startDate: "", endDate: "",budget:"" })} >
-                      Cancel
-                    </button>
-                    </Link>
-          
-          <button type="submit" className="px-4 py-2 bg-orange-500 text-white rounded-lg">
+          <Link to="/project">
+            <button
+              type="button"
+              className="px-4 py-2 bg-gray-400 text-white rounded"
+              onClick={() =>
+                setProject({
+                  projectName: "",
+                  description: "",
+                  startDate: "",
+                  endDate: "",
+                  budget: "",
+                })
+              }
+            >
+              Cancel
+            </button>
+          </Link>
+
+          <button
+            type="submit"
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg"
+          >
             {id ? "Update Project" : "Create Project"}
           </button>
         </div>

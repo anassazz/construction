@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link ,useParams, useNavigate} from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const TaskForm = () => {
+
+  const { id } = useParams(); // Récupérer l'ID depuis l'URL
+  const navigate = useNavigate(); // Permet de rediriger après soumission
+
   const [task, setTask] = useState({
     project: "",
     description: "",
@@ -14,17 +18,21 @@ const TaskForm = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:3000/api/projects");
+    if (id) {
+      axios
+        .get(`http://127.0.0.1:3000/api/tasks/${id}`)
+        .then((response) => {
+          setTask(response.data);
+        })
+        .catch((error) => console.error("Error fetching task:", error));
+    }
+    axios
+      .get("http://127.0.0.1:3000/api/projects")
+      .then((response) => {
         setProjects(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-    fetchProjects();
-  }, []);
+      })
+      .catch((error) => console.error("Error fetching projects:", error));
+  }, [id]);
 
   const handleChange = (e) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -32,20 +40,27 @@ const TaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (task.endDate && task.startDate > task.endDate) {
+      toast.error("End Date cannot be before Start Date.");
+      return;
+    }
+
     try {
-      // Assurez-vous que `task.project` est un ObjectId, pas un nom de projet
-      await axios.post("http://127.0.0.1:3000/api/tasks", task);
-      toast.success("Task created successfully!");
-      setTask({ project: "", description: "", startDate: "", endDate: "" });
+      if (id) {
+        await axios.put(`http://127.0.0.1:3000/api/tasks/${id}`, task);
+        toast.success("Task updated successfully!");
+      } else {
+        await axios.post("http://127.0.0.1:3000/api/tasks", task);
+        toast.success("Task created successfully!");
+      }
+      navigate("/tasks"); 
     } catch (error) {
-      console.error(
-        "Error creating task:",
-        error.response?.data || error.message
-      );
-      toast.error(error.response?.data?.error || "Error creating task");
+      toast.error(error.response?.data?.error || "Error processing request");
     }
   };
 
+  
   return (
     <div className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-2xl shadow-md border-8 border-orange-500">
       <h2 className="text-xl font-semibold mb-4 text-gray-700">New Task</h2>
@@ -125,7 +140,8 @@ const TaskForm = () => {
             type="submit"
             className="px-4 py-2 bg-orange-600 text-white rounded"
           >
-            Create Task
+            
+            {id ? "Update Task" : "Create Task"}
           </button>
         </div>
       </form>

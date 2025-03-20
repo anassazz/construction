@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import Projects from "./components/Projects/Projects";
 import Tasks from "./components/Tasks/Tasks";
 import Resources from "./components/Resources/Resources";
+
 import ProjectForm from "./components/Projects/ProjectForm";
 import TaskForm from "./components/Tasks/TaskForm";
 import ResourceForm from "./components/Resources/ResourceForm";
@@ -36,6 +37,7 @@ function App() {
 
         <Route path="/resourceform/:id" element={<ResourceForm />} />
         <Route path="/projectform/:id" element={<ProjectForm />} />
+        <Route path="/taskform/:id" element={<TaskForm />} />
 
 
         <Route path="/projectform" element={<ProjectForm></ProjectForm>} />
