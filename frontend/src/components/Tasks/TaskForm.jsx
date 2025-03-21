@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link ,useParams, useNavigate} from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const TaskForm = () => {
-
   const { id } = useParams(); // Récupérer l'ID depuis l'URL
   const navigate = useNavigate(); // Permet de rediriger après soumission
 
   const [task, setTask] = useState({
-    project: "",
+    project: "", // Stocke l'ID du projet
     description: "",
     startDate: "",
     endDate: "",
@@ -26,6 +25,7 @@ const TaskForm = () => {
         })
         .catch((error) => console.error("Error fetching task:", error));
     }
+
     axios
       .get("http://127.0.0.1:3000/api/projects")
       .then((response) => {
@@ -35,7 +35,11 @@ const TaskForm = () => {
   }, [id]);
 
   const handleChange = (e) => {
-    setTask({ ...task, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setTask((prevTask) => ({
+      ...prevTask,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -54,18 +58,20 @@ const TaskForm = () => {
         await axios.post("http://127.0.0.1:3000/api/tasks", task);
         toast.success("Task created successfully!");
       }
-      navigate("/tasks"); 
+      navigate("/tasks");
     } catch (error) {
       toast.error(error.response?.data?.error || "Error processing request");
     }
   };
 
-  
   return (
     <div className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-2xl shadow-md border-8 border-orange-500">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">New Task</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">
+        {id ? "Edit Task" : "New Task"}
+      </h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
+        {/* Sélection du projet */}
         <div>
           <label className="block text-gray-600">Project</label>
           <select
@@ -78,7 +84,7 @@ const TaskForm = () => {
             <option value="">Select a project</option>
             {projects.length > 0 ? (
               projects.map((project) => (
-                <option key={project._id} value={project._id}> {/* Utilisez _id comme valeur */}
+                <option key={project._id} value={project._id}>
                   {project.projectName}
                 </option>
               ))
@@ -88,6 +94,7 @@ const TaskForm = () => {
           </select>
         </div>
 
+        {/* Description */}
         <div>
           <label className="block text-gray-600">Description</label>
           <textarea
@@ -100,13 +107,14 @@ const TaskForm = () => {
           />
         </div>
 
+        {/* Dates */}
         <div>
           <label className="block text-gray-600">Start Date</label>
           <input
             type="date"
+            name="startDate"
             value={task.startDate}
             onChange={handleChange}
-            name="startDate"
             className="w-full p-2 border rounded mt-1"
             required
           />
@@ -124,23 +132,15 @@ const TaskForm = () => {
           />
         </div>
 
+        {/* Boutons */}
         <div className="flex justify-between mt-4">
-
           <Link to="/tasks">
-          <button
-            type="button"
-            className="px-4 py-2 bg-gray-400 text-white rounded"
-          >
-            Cancel
-          </button>
+            <button type="button" className="px-4 py-2 bg-gray-400 text-white rounded">
+              Cancel
+            </button>
           </Link>
-          
 
-          <button
-            type="submit"
-            className="px-4 py-2 bg-orange-600 text-white rounded"
-          >
-            
+          <button type="submit" className="px-4 py-2 bg-orange-600 text-white rounded">
             {id ? "Update Task" : "Create Task"}
           </button>
         </div>
