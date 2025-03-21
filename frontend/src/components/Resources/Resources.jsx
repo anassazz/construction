@@ -73,7 +73,7 @@ function Resources() {
             {resources.length > 0 ? (
               resources.map((resource) => (
                 <tr key={resources._id}>
-                  <td className="px-4 py-2 border-b">{resource.project}</td>
+                  <td className="px-4 py-2 border-b">{resource.projectName}</td>
 
                   <td className="px-4 py-2 border-b">
                     {resource.resourceName}

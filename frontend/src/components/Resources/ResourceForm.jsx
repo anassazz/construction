@@ -1,26 +1,24 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { Link ,useParams,useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const ResourceForm = () => {
-
   const { id } = useParams(); // Récupérer l'ID depuis l'URL
   const navigate = useNavigate(); // Permet de rediriger après soumission
-      
+
+  const [projects, setProjects] = useState([]); // Stocke la liste des projets
   const [resource, setResource] = useState({
     project: "", // Stocke l'ID du projet
+    projectName: "", // Stocke le nom du projet
     resourceName: "",
     type: "",
     quantity: "",
     supplier: "",
   });
 
-  const [projects, setProjects] = useState([]); // Nouvel état pour la liste des projets
-
-
   useEffect(() => {
-    // Charger les projets pour le select
+    // Charger la liste des projets
     axios.get("http://127.0.0.1:3000/api/projects")
       .then((response) => setProjects(response.data))
       .catch((error) => console.error("Error fetching projects:", error));
@@ -33,8 +31,31 @@ const ResourceForm = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (resource.project) {
+      const selectedProject = projects.find((p) => p._id === resource.project);
+      if (selectedProject) {
+        setResource((prev) => ({
+          ...prev,
+          projectName: selectedProject.projectName,
+        }));
+      }
+    }
+  }, [resource.project, projects]);
+
   const handleChange = (e) => {
-    setResource({ ...resource, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "project") {
+      const selectedProject = projects.find((p) => p._id === value);
+      setResource({
+        ...resource,
+        project: value,
+        projectName: selectedProject ? selectedProject.projectName : "",
+      });
+    } else {
+      setResource({ ...resource, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -56,10 +77,9 @@ const ResourceForm = () => {
   return (
     <div className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-2xl shadow-md border-8 border-orange-500">
       <h2 className="text-xl font-semibold mb-4 text-gray-700">{id ? "Edit Resource" : "New Resource"}</h2>
-      
-      <form className="space-y-4" onSubmit={handleSubmit}>
 
-          {/* Sélection du projet */}
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        {/* Sélection du projet */}
         <div>
           <label className="block text-gray-600">Project</label>
           <select
@@ -84,9 +104,9 @@ const ResourceForm = () => {
 
         <div>
           <label className="block text-gray-600">Resource Name</label>
-          <input 
-            type="text" 
-            name="resourceName" 
+          <input
+            type="text"
+            name="resourceName"
             value={resource.resourceName}
             onChange={handleChange}
             className="w-full p-2 border rounded mt-1"
@@ -97,8 +117,8 @@ const ResourceForm = () => {
 
         <div>
           <label className="block text-gray-600">Type</label>
-          <select 
-            name="type" 
+          <select
+            name="type"
             value={resource.type}
             onChange={handleChange}
             className="w-full p-2 border rounded mt-1"
@@ -116,9 +136,9 @@ const ResourceForm = () => {
 
         <div>
           <label className="block text-gray-600">Quantity</label>
-          <input 
-            type="number" 
-            name="quantity" 
+          <input
+            type="number"
+            name="quantity"
             value={resource.quantity}
             onChange={handleChange}
             className="w-full p-2 border rounded mt-1"
@@ -130,9 +150,9 @@ const ResourceForm = () => {
 
         <div>
           <label className="block text-gray-600">Supplier</label>
-          <input 
-            type="text" 
-            name="supplier" 
+          <input
+            type="text"
+            name="supplier"
             value={resource.supplier}
             onChange={handleChange}
             className="w-full p-2 border rounded mt-1"
@@ -142,22 +162,28 @@ const ResourceForm = () => {
         </div>
 
         <div className="flex justify-between mt-4">
-
-          <Link to ="/resource">
-          <button 
-            type="button" 
-            className="px-4 py-2 bg-gray-400 text-white rounded"
-            onClick={() => setResource({ resourceName: "", type: "", quantity: "", supplier: "" })} >
-            Cancel
-          </button>
+          <Link to="/resource">
+            <button
+              type="button"
+              className="px-4 py-2 bg-gray-400 text-white rounded"
+              onClick={() => setResource({
+                project: "",
+                projectName: "",
+                resourceName: "",
+                type: "",
+                quantity: "",
+                supplier: "",
+              })}
+            >
+              Cancel
+            </button>
           </Link>
-          
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="px-4 py-2 bg-orange-600 text-white rounded"
           >
-             {id ? "Update Resource" : "Create Resource"}
+            {id ? "Update Resource" : "Create Resource"}
           </button>
         </div>
       </form>
