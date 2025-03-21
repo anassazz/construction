@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema({
+  project: { type: mongoose.Schema.Types.ObjectId, ref: "Project", required: true },
+
   resourceName: {
     type: String,
     required: true,

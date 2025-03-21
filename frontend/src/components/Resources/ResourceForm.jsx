@@ -9,24 +9,29 @@ const ResourceForm = () => {
   const navigate = useNavigate(); // Permet de rediriger après soumission
       
   const [resource, setResource] = useState({
+    project: "", // Stocke l'ID du projet
     resourceName: "",
     type: "",
     quantity: "",
     supplier: "",
   });
 
+  const [projects, setProjects] = useState([]); // Nouvel état pour la liste des projets
+
 
   useEffect(() => {
+    // Charger les projets pour le select
+    axios.get("http://127.0.0.1:3000/api/projects")
+      .then((response) => setProjects(response.data))
+      .catch((error) => console.error("Error fetching projects:", error));
+
+    // Si un ID est présent, charger la ressource existante
     if (id) {
       axios.get(`http://127.0.0.1:3000/api/resources/${id}`)
-      
         .then((response) => setResource(response.data))
         .catch((error) => console.error("Error fetching resource:", error));
-        
     }
-
   }, [id]);
-
 
   const handleChange = (e) => {
     setResource({ ...resource, [e.target.name]: e.target.value });
@@ -53,6 +58,30 @@ const ResourceForm = () => {
       <h2 className="text-xl font-semibold mb-4 text-gray-700">{id ? "Edit Resource" : "New Resource"}</h2>
       
       <form className="space-y-4" onSubmit={handleSubmit}>
+
+          {/* Sélection du projet */}
+        <div>
+          <label className="block text-gray-600">Project</label>
+          <select
+            name="project"
+            value={resource.project}
+            onChange={handleChange}
+            className="w-full p-2 border rounded mt-1"
+            required
+          >
+            <option value="">Select a project</option>
+            {projects.length > 0 ? (
+              projects.map((project) => (
+                <option key={project._id} value={project._id}>
+                  {project.projectName}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>No projects available</option>
+            )}
+          </select>
+        </div>
+
         <div>
           <label className="block text-gray-600">Resource Name</label>
           <input 

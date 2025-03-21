@@ -28,7 +28,10 @@ function Resources() {
         await axios.delete(`http://127.0.0.1:3000/api/resources/${id}`);
         setResources(resources.filter((resource) => resource._id !== id));
       } catch (error) {
-        console.error("Error deleting resource:", error.response?.data || error.message);
+        console.error(
+          "Error deleting resource:",
+          error.response?.data || error.message
+        );
       }
     }
   };
@@ -58,6 +61,7 @@ function Resources() {
         <table className="min-w-full table-auto ">
           <thead>
             <tr>
+              <th className="px-4 py-2 border-b text-left ">project</th>
               <th className="px-4 py-2 border-b text-left">Resource Name </th>
               <th className="px-4 py-2 border-b text-left">Select a type</th>
               <th className="px-4 py-2 border-b text-left">Quantity</th>
@@ -69,6 +73,8 @@ function Resources() {
             {resources.length > 0 ? (
               resources.map((resource) => (
                 <tr key={resources._id}>
+                  <td className="px-4 py-2 border-b">{resource.project}</td>
+
                   <td className="px-4 py-2 border-b">
                     {resource.resourceName}
                   </td>
@@ -76,13 +82,12 @@ function Resources() {
                   <td className="px-4 py-2 border-b">{resource.quantity}</td>
                   <td className="px-4 py-2 border-b">{resource.supplier}</td>
                   <td className="px-4 py-2 border-b flex space-x-2">
-
-                    <Link to ={`/resourceform/${resource._id}`}>
-                    <button className="text-orange-500 hover:text-orange-700 ">
-                      <Pencil size={23} />
-                    </button>
+                    <Link to={`/resourceform/${resource._id}`}>
+                      <button className="text-orange-500 hover:text-orange-700 ">
+                        <Pencil size={23} />
+                      </button>
                     </Link>
-                    
+
                     <button
                       className="text-red-500 hover:text-red-700"
                       onClick={() => handleDelete(resource._id)}
