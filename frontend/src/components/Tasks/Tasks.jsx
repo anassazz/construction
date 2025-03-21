@@ -11,6 +11,7 @@ const Tasks = () => {
       try {
         const response = await axios.get("http://127.0.0.1:3000/api/tasks");
         setTasks(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(
           "Error fetching projects:",
@@ -66,7 +67,7 @@ const Tasks = () => {
             {tasks.length > 0 ? (
               tasks.map((task) => (
                 <tr key={task._id}>
-                  <td className="px-4 py-2 border-b">{task.projectName}</td>
+                  <td className="px-4 py-2 border-b">{task.project.projectName}</td>
                   <td className="px-4 py-2 border-b">{task.description}</td>
                   <td className="px-4 py-2 border-b">{task.startDate}</td>
                   <td className="px-4 py-2 border-b">{task.endDate}</td>
